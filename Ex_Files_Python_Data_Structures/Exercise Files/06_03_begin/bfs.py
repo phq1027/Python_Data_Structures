@@ -10,7 +10,20 @@ from queue_ll import Queue
 
 
 def bfs(maze, start, goal):
-    pass
+    queue = Queue()
+    queue.enqueue(start)
+    predecessors = {start: None}
+
+    while not queue.is_empty():
+        current = queue.dequeue()
+        if current == goal:
+            return get_path(predecessors, start, goal)
+        for direction in ['up', 'right','down','left']:
+            i, j = offsets[direction]
+            current_offset = (current[0]+i, current[1]+j)
+            if is_legal_pos(maze, current_offset) and current_offset not in predecessors:
+                queue.enqueue(current_offset)
+                predecessors[current_offset] = current
 
 
 if __name__ == "__main__":
@@ -19,6 +32,7 @@ if __name__ == "__main__":
     start_pos = (0, 0)
     goal_pos = (2, 2)
     result = bfs(maze, start_pos, goal_pos)
+    print(result)
     assert result == [(0, 0), (0, 1), (0, 2), (1, 2), (2, 2)]
 
     # Test 2
@@ -28,6 +42,7 @@ if __name__ == "__main__":
     start_pos = (0, 0)
     goal_pos = (2, 2)
     result = bfs(maze, start_pos, goal_pos)
+    print(result)
     assert result == [(0, 0), (1, 0), (1, 1), (1, 2), (2, 2)]
 
     # Test 3
@@ -35,4 +50,5 @@ if __name__ == "__main__":
     start_pos = (0, 0)
     goal_pos = (3, 3)
     result = bfs(maze, start_pos, goal_pos)
+    print(result)
     assert result is None
