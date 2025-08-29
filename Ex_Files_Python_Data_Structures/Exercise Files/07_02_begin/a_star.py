@@ -20,7 +20,28 @@ def heuristic(a, b):
 
 
 def a_star(maze, start, goal):
-    pass
+    pq = PriorityQueue()
+    pq.put(start, 0)
+    predecessors = {start: None}
+
+    g_value = {start: 0}
+
+    while not pq.is_empty():
+        current_cell = pq.get()
+
+        if current_cell == goal:
+            return get_path(predecessors, start, goal)
+
+        for direction in ['up', 'right', 'down', 'left']:
+            i, j = offsets[direction]
+            neighbour = (current_cell[0] + i, current_cell[1] + j)
+            if is_legal_pos(maze, neighbour) and neighbour not in predecessors:
+                predecessors[neighbour] = current_cell
+                g_value[neighbour] = g_value[current_cell] + 1 #起点到该点的距离
+                f_value = g_value[neighbour] + heuristic(neighbour, goal) #起点到该点的距离+该点到终点的距离
+                pq.put(neighbour, f_value)
+
+    return None
 
 
 if __name__ == "__main__":
@@ -41,7 +62,7 @@ if __name__ == "__main__":
     assert result == [(0, 0), (1, 0), (1, 1), (1, 2), (2, 2)]
 
     # Test 3
-    maze = read_maze("mini-maze-bfs.txt")
+    maze = read_maze("mazes/mini_maze_bfs.txt")
     start_pos = (0, 0)
     goal_pos = (3, 3)
     result = a_star(maze, start_pos, goal_pos)
